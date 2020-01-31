@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+/// <summary>
+/// Used for calling other scripts' methods when clicking on the attached gameobject.
+/// A collider is required, such as BoxCollider2D.
+/// </summary>
+
 public class MouseInteraction : MonoBehaviour
 {
     public float longClickTime;
