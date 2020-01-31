@@ -83,10 +83,10 @@ public class MouseInteraction : MonoBehaviour
         public override void OnInspectorGUI()
         {
             DrawDefaultInspector();
-
+            MouseInteraction testScript = (MouseInteraction)target;
             if (GUILayout.Button("Test wut"))
             {
-                Debug.Log("Wat");
+                testScript.TestFunction1();
             }
         }
     }
