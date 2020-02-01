@@ -8,7 +8,6 @@ public class Node {
   public Vector3 speed = new Vector3();
   public Vector3 force = new Vector3();
   public float connections = 0.0f;
-  public float max_magnitude = 0.5f;
   private Vector3 start;
   bool backbone = false;
 
@@ -22,7 +21,7 @@ public class Node {
   public void Update() {
     speed += parent.gravity * Time.deltaTime + force;
     speed *= (float)(1.0d - parent.resistance * Time.deltaTime);
-    if (speed.magnitude > max_magnitude) speed = speed.normalized * max_magnitude;
+    if (speed.magnitude > parent.max_magnitude) speed = speed.normalized * parent.max_magnitude;
     location += speed * Time.deltaTime;
     force = new Vector3();
     location.y = start.y;
@@ -67,18 +66,23 @@ public class Connection {
 }
 
 public class WobblyPlane : MonoBehaviour {
+  public static WobblyPlane current;
   private static System.Random rnd = new System.Random();
 
   public Vector3 gravity = new Vector3(0, 0, -0.9f);
   public float jelly_force = 0.2f;
   public double resistance = 0.5f;
   public double floor = -3.3;
+  public float max_magnitude = 0.5f;
 
   public Mesh mesh;
   public Node[] nodes;
   public Connection[] connections;
 
+  private float time = 0.0f, next = 0.0f;
+
   void Start() {
+    current = this;
     mesh = GetComponent<MeshFilter>().mesh;
 
     Vector3 average = new Vector3();
@@ -101,6 +105,13 @@ public class WobblyPlane : MonoBehaviour {
   }
 
   void Update() {
+    time += Time.deltaTime;
+    if (time > next) {
+//      Debug.Log("Timed poke");
+      RandomPoke();
+      next += UnityEngine.Random.Range(0.0f, 0.05f);
+    }
+
     foreach (Connection c in connections) if (c != null) c.Update();
     foreach (Node nd in nodes) nd.Update();
  
@@ -122,6 +133,12 @@ public class WobblyPlane : MonoBehaviour {
     nodes[index].speed += force;
   }
 
+  void RandomPoke() {
+    int i = rnd.Next(nodes.Length);
+    nodes[i].speed += new Vector3(
+      UnityEngine.Random.Range(-0.3f, 0.3f), 0.0f, UnityEngine.Random.Range(-0.3f, 0.3f));
+  }
+
 #if UNITY_EDITOR
   [UnityEditor.CustomEditor(typeof(WobblyPlane))]
   public class WobblyPlaneEditor : UnityEditor.Editor {
@@ -129,11 +146,7 @@ public class WobblyPlane : MonoBehaviour {
       DrawDefaultInspector();
       WobblyPlane plane = (WobblyPlane)target;
 
-      if (GUILayout.Button("Poke")) {
-        int i = rnd.Next(plane.nodes.Length);
-        plane.nodes[i].speed += new Vector3(
-          UnityEngine.Random.Range(-0.03f, 0.03f), 0.0f, UnityEngine.Random.Range(-0.03f, 0.03f));
-      }
+      if (GUILayout.Button("Poke")) WobblyPlane.current.RandomPoke();
     }
   }
 #endif

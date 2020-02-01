@@ -311,8 +311,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb78be7e0a5b73e40a5a69958dd51861, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gravity: {x: 0, y: 0, z: -0.9}
+  gravity: {x: 0, y: 0, z: -2.9}
   jelly_force: 0.2
   resistance: 0.75
   floor: -3.3
+  max_magnitude: 1
   mesh: {fileID: 0}
