@@ -9,6 +9,7 @@ public class ThoughtController : MonoBehaviour
     public float velx;
     public float vely;
     public string type;
+    public int health;
     BoxCollider2D col2D;
 
     public Vector2 screenBounds;
@@ -36,5 +37,18 @@ public class ThoughtController : MonoBehaviour
         {
             vely *= -1;
         }
+    }
+
+    public void onClick(){
+        velx /= 10;
+        vely /= 10;
+        health -= 1;
+        if (health < 0){
+            Destroy(gameObject);
+        }
+    }
+    public void onRelease(){
+        velx *= 10;
+        vely *= 10;
     }
 }

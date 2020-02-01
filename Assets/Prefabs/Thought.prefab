@@ -100,6 +100,7 @@ MonoBehaviour:
   velx: 0
   vely: 0
   type: 
+  health: 10
   screenBounds: {x: 0, y: 0}
   screenOrigo: {x: 0, y: 0}
 --- !u!114 &8316672919112759744
@@ -119,13 +120,35 @@ MonoBehaviour:
   timeClicked: 0
   shortClickEvents:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 6532064998148939787}
+        m_MethodName: onRelease
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   longClickEvents:
     m_PersistentCalls:
       m_Calls: []
   instantClickEvents:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 6532064998148939787}
+        m_MethodName: onClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!61 &-8100012317947128102
 BoxCollider2D:
   m_ObjectHideFlags: 0
