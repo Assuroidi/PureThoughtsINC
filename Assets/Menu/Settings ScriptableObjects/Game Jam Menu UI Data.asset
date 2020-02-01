@@ -22,8 +22,8 @@ MonoBehaviour:
     m_FadeDuration: 0.1
   imageColor: {r: 0.61960787, g: 0.8196079, b: 0.16470589, a: 1}
   sliderColorBlock:
-    m_NormalColor: {r: 0.9058824, g: 0.5803922, b: 0.15686275, a: 1}
-    m_HighlightedColor: {r: 0.87474656, g: 0.52205884, b: 1, a: 1}
+    m_NormalColor: {r: 0.61960787, g: 0.8196079, b: 0.16470589, a: 1}
+    m_HighlightedColor: {r: 0.9058824, g: 0.5803922, b: 0.15686275, a: 1}
     m_PressedColor: {r: 1, g: 0.5372549, b: 0, a: 1}
     m_SelectedColor: {r: 0.9921569, g: 0.76470596, b: 0.07058824, a: 1}
     m_DisabledColor: {r: 0.56114835, g: 0.6628893, b: 0.71323526, a: 1}
