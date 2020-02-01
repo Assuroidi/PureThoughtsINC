@@ -8,6 +8,7 @@ public class Node {
   public Vector3 speed = new Vector3();
   public Vector3 force = new Vector3();
   public float connections = 0.0f;
+  public float max_magnitude = 0.5f;
   private Vector3 start;
   bool backbone = false;
 
@@ -21,13 +22,12 @@ public class Node {
   public void Update() {
     speed += parent.gravity * Time.deltaTime + force;
     speed *= (float)(1.0d - parent.resistance * Time.deltaTime);
+    if (speed.magnitude > max_magnitude) speed = speed.normalized * max_magnitude;
     location += speed * Time.deltaTime;
     force = new Vector3();
     location.y = start.y;
 //    if (backbone) location.x = start.x;
-//    location.x = start.x;
     if (location.z < parent.floor && speed.z < 0) {
-//      location.z -= (float)(location.z - parent.floor);
       location.z = (float)parent.floor;
       speed.z = -speed.z;
     }
@@ -60,9 +60,6 @@ public class Connection {
     double mag = size - vec.magnitude;
     if (mag != 0) {
       Vector3 frc = vec.normalized * (float)mag;
-//      Debug.Log("Vector: " + vec + " * Magnitude: " + mag + " = Force: " + frc); //XXX
-//      parent.nodes[start].location -= frc * 0.40f;
-//      parent.nodes[end].location += frc * 0.40f;
       parent.nodes[start].force -= frc * force * parent.jelly_force;
       parent.nodes[end].force += frc * force * parent.jelly_force;
     }
@@ -70,6 +67,8 @@ public class Connection {
 }
 
 public class WobblyPlane : MonoBehaviour {
+  private static System.Random rnd = new System.Random();
+
   public Vector3 gravity = new Vector3(0, 0, -0.9f);
   public float jelly_force = 0.2f;
   public double resistance = 0.5f;
@@ -95,39 +94,10 @@ public class WobblyPlane : MonoBehaviour {
       for (int si = 0; si < ei; si++)
         edges.Add((si, ei, 1.0f));
 
-/*
-    int[] tls = mesh.triangles;
-    for (int i = 0; i < tls.Length; i += 3) {
-      int v1a = tls[i],   v1b = tls[i+1];
-      if (v1a > v1b) (v1a, v1b) = (v1b, v1a);
-      edges.Add((v1a, v1b, 1.0f));
-      int v2a = tls[i+1], v2b = tls[i+2];
-      if (v2a > v2b) (v2a, v2b) = (v2b, v2a);
-      edges.Add((v2a, v2b, 1.0f));
-      int v3a = tls[i+2], v3b = tls[i];
-      if (v3a > v3b) (v3a, v3b) = (v3b, v3a);
-      edges.Add((v3a, v3b, 1.0f));
-//      Debug.Log("Edge: " + v1a + ' ' + v1b); //XXX
-    }
-*/
-
-/*
-    nodes[nodes.Length - 3] = new Node(this, average + new Vector3( 0.00f,  0.00f,  0.50f), true);
-    nodes[nodes.Length - 2] = new Node(this, average + new Vector3(-0.75f,  0.00f, -0.25f), true);
-    nodes[nodes.Length - 1] = new Node(this, average + new Vector3( 0.75f,  0.00f, -0.25f), true);
-    edges.Add((nodes.Length - 1, nodes.Length - 3, 1.0f));
-    edges.Add((nodes.Length - 2, nodes.Length - 1, 1.0f));
-    edges.Add((nodes.Length - 3, nodes.Length - 2, 1.0f));
-    for (int i = 0; i < mesh.vertices.Length; i++) {
-      edges.Add((i, nodes.Length - 1, 1.0f));
-      edges.Add((i, nodes.Length - 2, 1.0f));
-      edges.Add((i, nodes.Length - 3, 1.0f));
-    }
-*/
-
     connections = new Connection[edges.Count];
     int edge_index = 0;
-    foreach ((int, int, float) tp in edges) connections[edge_index++] = new Connection(this, tp.Item1, tp.Item2, tp.Item3);
+    foreach ((int, int, float) tp in edges)
+      connections[edge_index++] = new Connection(this, tp.Item1, tp.Item2, tp.Item3);
   }
 
   void Update() {
@@ -149,7 +119,9 @@ public class WobblyPlane : MonoBehaviour {
       WobblyPlane plane = (WobblyPlane)target;
 
       if (GUILayout.Button("Poke")) {
-        Debug.Log(plane.mesh.triangles);
+        int i = rnd.Next(plane.nodes.Length);
+        plane.nodes[i].speed += new Vector3(
+          UnityEngine.Random.Range(-0.03f, 0.03f), 0.0f, UnityEngine.Random.Range(-0.03f, 0.03f));
       }
     }
   }
