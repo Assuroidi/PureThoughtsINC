@@ -2,15 +2,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+
+/// <summary>
+/// Functions as a count down timer.
+/// </summary>
 
 public class BudgetManager : MonoBehaviour
 {
     public int startingFunds;
     [SerializeField]
     private int currentFunds;
-    public float decreasingSpeed;
+    public float decreasingInterval;
     public int decreasingAmount;
-    public Events.SomethingHappened AnnounceBudgetEnd;
+    public event Events.SomethingHappened AnnounceBudgetEnd;
+    public Text budgetText;
 
     // Start is called before the first frame update
     void Start()
@@ -20,24 +26,35 @@ public class BudgetManager : MonoBehaviour
             startingFunds = 50000;
         }
         currentFunds = startingFunds;
-        if (decreasingAmount <= 0 || decreasingSpeed <= 0)
+        if (decreasingAmount == 0)
         {
-            StartCoroutine(StartCountingDown());
+            decreasingAmount = 5000;
         }
-        else
+        if (decreasingInterval == 0)
         {
-            StartCoroutine(StartCountingDown(decreasingAmount, decreasingSpeed));
+            decreasingInterval = 5f;
         }
+        StartCoroutine(StartCountingDown(decreasingAmount, decreasingInterval));
+        UpdateBudgetText();
     }
 
     IEnumerator StartCountingDown(int amount = 5000, float speed = 5f)
     {
         while (currentFunds > 0)
         {
-            currentFunds -= amount;
             yield return new WaitForSeconds(speed);
+            currentFunds -= amount;
+            UpdateBudgetText();
         }
         AnnounceBudgetEnd?.Invoke();
+    }
+
+    private void UpdateBudgetText()
+    {
+        if (budgetText)
+        {
+            budgetText.text = "Budget: " + currentFunds;
+        }
     }
 
     public void AddFunds(int amount)
