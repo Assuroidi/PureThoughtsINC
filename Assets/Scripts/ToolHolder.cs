@@ -22,7 +22,7 @@ public class ToolHolder : MonoBehaviour
     {
         currentTool = originalTool;
         rend = gameObject.GetComponent<SpriteRenderer>();
-        gmToolScript = GameObject.FindGameObjectWithTag("GameManager")?.GetComponent<ToolSelection>(); ;
+        gmToolScript = GameObject.FindGameObjectWithTag("GameManager")?.GetComponent<ToolSelection>();
         if (gmToolScript)
         {
             gmToolScript.AnnounceToolChanged += GmToolScript_AnnounceToolChanged;

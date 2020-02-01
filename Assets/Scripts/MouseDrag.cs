@@ -22,14 +22,22 @@ public class MouseDrag : MonoBehaviour
     {
         mainCamera = Camera.main;
         draggingEnabled = true;
-        gmToolScript = GameObject.FindGameObjectWithTag("GameManager")?.GetComponent<ToolSelection>(); ;
+        gmToolScript = GameObject.FindGameObjectWithTag("GameManager")?.GetComponent<ToolSelection>();
         if (gmToolScript)
         {
-            gmToolScript.AnnounceToolChanged += GmToolScript_AnnounceToolChanged; ;
+            gmToolScript.AnnounceToolChanged += GmToolScript_AnnounceToolChanged;
         }
         else
         {
             Debug.LogWarning("MouseDrag could not find GameManager's ToolSelection script!");
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (gmToolScript)
+        {
+            gmToolScript.AnnounceToolChanged -= GmToolScript_AnnounceToolChanged;
         }
     }
 

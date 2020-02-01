@@ -10,8 +10,7 @@ using UnityEngine;
 public class ToolSelection : MonoBehaviour
 {
     public ETool selectedTool;
-    public delegate void ToolSelectionEvent(ETool toolEnum);
-    public event ToolSelectionEvent AnnounceToolChanged;
+    public event Events.ToolSelectionEvent AnnounceToolChanged;
 
     // Start is called before the first frame update
     void Start()
