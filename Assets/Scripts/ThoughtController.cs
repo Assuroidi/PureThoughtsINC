@@ -66,7 +66,7 @@ public class ThoughtController : MonoBehaviour
         }
     }
 
-    public void onClick(){
+    public void OnClick(){
         if (thoughtControlEnabled){
             velx /= 10;
             vely /= 10;
@@ -76,7 +76,7 @@ public class ThoughtController : MonoBehaviour
             }
         }
     }
-    public void onRelease(){
+    public void OnRelease(){
         if (thoughtControlEnabled){
             velx *= 10;
             vely *= 10;

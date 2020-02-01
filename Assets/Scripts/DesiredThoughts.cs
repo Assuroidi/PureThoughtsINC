@@ -16,4 +16,20 @@ public class DesiredThoughts : MonoBehaviour
             i++;
         }
     }
+
+    public void CompleteOrder(){
+        thoughts = GameObject.FindGameObjectsWithTag("thought");
+        foreach (GameObject thought in thoughts){
+            CheckDesiredThoughtMatch(thought.type);
+        }
+    }
+
+    private void CheckDesiredThoughtMatch(EThought thought){
+        if(requiredThoughts.Contains(thought)){
+            BudgetManager.AddFunds(100);
+        }
+        else{
+            BudgetManager.AddFunds(-200);
+        }
+    }
 }
