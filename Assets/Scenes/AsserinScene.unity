@@ -601,9 +601,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startingFunds: 0
   currentFunds: 0
-  decreasingInterval: 1
+  decreasingInterval: 0
   decreasingAmount: 0
-  budgetText: {fileID: 0}
+  budgetText: {fileID: 682874805}
 --- !u!114 &880440237
 MonoBehaviour:
   m_ObjectHideFlags: 0
