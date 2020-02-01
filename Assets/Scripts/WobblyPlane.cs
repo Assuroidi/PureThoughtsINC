@@ -6,23 +6,32 @@ public class Node {
   private WobblyPlane parent;
   public Vector3 location = new Vector3();
   public Vector3 speed = new Vector3();
-  float plane = 0;
+  public Vector3 force = new Vector3();
+  public float connections = 0.0f;
+  private Vector3 start;
+  bool backbone = false;
 
-  public Node(WobblyPlane parent, Vector3 start) {
+  public Node(WobblyPlane parent, Vector3 start, bool backbone=false) {
+    this.backbone = backbone;
     this.parent = parent;
-    location = start;
-    plane = start.y;
+    this.start = location;
+    this.location = start;
   }
 
   public void Update() {
-    speed += parent.gravity * Time.deltaTime;
+    speed += parent.gravity * Time.deltaTime + force;
     speed *= (float)(1.0d - parent.resistance * Time.deltaTime);
     location += speed * Time.deltaTime;
-    location.y = plane;
+    force = new Vector3();
+    location.y = start.y;
+//    if (backbone) location.x = start.x;
+//    location.x = start.x;
     if (location.z < parent.floor && speed.z < 0) {
-      location.z -= (float)(location.z - parent.floor);
+//      location.z -= (float)(location.z - parent.floor);
+      location.z = (float)parent.floor;
       speed.z = -speed.z;
     }
+    force = new Vector3();
   }
 }
 
@@ -40,6 +49,9 @@ public class Connection {
 
     this.size = (parent.nodes[end].location - parent.nodes[start].location).magnitude;
 
+    parent.nodes[start].connections += 1.0f;
+    parent.nodes[end].connections += 1.0f;
+
 //    Debug.Log("Connection: " + start + " - " + end + ": " + size); //XXX
   }
 
@@ -49,19 +61,19 @@ public class Connection {
     if (mag != 0) {
       Vector3 frc = vec.normalized * (float)mag;
 //      Debug.Log("Vector: " + vec + " * Magnitude: " + mag + " = Force: " + frc); //XXX
-      parent.nodes[start].location -= frc * 0.49f;
-      parent.nodes[end].location += frc * 0.49f;
-      parent.nodes[start].speed -= frc * force * parent.jelly_force;
-      parent.nodes[end].speed += frc * force * parent.jelly_force;
+//      parent.nodes[start].location -= frc * 0.40f;
+//      parent.nodes[end].location += frc * 0.40f;
+      parent.nodes[start].force -= frc * force * parent.jelly_force;
+      parent.nodes[end].force += frc * force * parent.jelly_force;
     }
   }
 }
 
 public class WobblyPlane : MonoBehaviour {
-  public Vector3 gravity = new Vector3(0, 0, -9.0f);
-  public float jelly_force = 10.0f;
-  public double resistance = 0.1f;
-  public double floor = -6.0;
+  public Vector3 gravity = new Vector3(0, 0, -0.9f);
+  public float jelly_force = 0.2f;
+  public double resistance = 0.5f;
+  public double floor = -3.3;
 
   public Mesh mesh;
   public Node[] nodes;
@@ -71,16 +83,20 @@ public class WobblyPlane : MonoBehaviour {
     mesh = GetComponent<MeshFilter>().mesh;
 
     Vector3 average = new Vector3();
-    nodes = new Node[mesh.vertices.Length + 1];
+    nodes = new Node[mesh.vertices.Length];
     for (int i = 0; i < mesh.vertices.Length; i++) {
       nodes[i] = new Node(this, mesh.vertices[i]);
       average += mesh.vertices[i];
     }
     average /= mesh.vertices.Length;
-    nodes[nodes.Length - 1] = new Node(this, average);
 
-    int[] tls = mesh.triangles;
     HashSet<(int, int, float)> edges = new HashSet<(int, int, float)>();
+    for (int ei = 0; ei < mesh.vertices.Length; ei++)
+      for (int si = 0; si < ei; si++)
+        edges.Add((si, ei, 1.0f));
+
+/*
+    int[] tls = mesh.triangles;
     for (int i = 0; i < tls.Length; i += 3) {
       int v1a = tls[i],   v1b = tls[i+1];
       if (v1a > v1b) (v1a, v1b) = (v1b, v1a);
@@ -93,7 +109,21 @@ public class WobblyPlane : MonoBehaviour {
       edges.Add((v3a, v3b, 1.0f));
 //      Debug.Log("Edge: " + v1a + ' ' + v1b); //XXX
     }
-    for (int i = 0; i < mesh.vertices.Length; i++) edges.Add((i, nodes.Length - 1, 2.0f));
+*/
+
+/*
+    nodes[nodes.Length - 3] = new Node(this, average + new Vector3( 0.00f,  0.00f,  0.50f), true);
+    nodes[nodes.Length - 2] = new Node(this, average + new Vector3(-0.75f,  0.00f, -0.25f), true);
+    nodes[nodes.Length - 1] = new Node(this, average + new Vector3( 0.75f,  0.00f, -0.25f), true);
+    edges.Add((nodes.Length - 1, nodes.Length - 3, 1.0f));
+    edges.Add((nodes.Length - 2, nodes.Length - 1, 1.0f));
+    edges.Add((nodes.Length - 3, nodes.Length - 2, 1.0f));
+    for (int i = 0; i < mesh.vertices.Length; i++) {
+      edges.Add((i, nodes.Length - 1, 1.0f));
+      edges.Add((i, nodes.Length - 2, 1.0f));
+      edges.Add((i, nodes.Length - 3, 1.0f));
+    }
+*/
 
     connections = new Connection[edges.Count];
     int edge_index = 0;
@@ -101,12 +131,8 @@ public class WobblyPlane : MonoBehaviour {
   }
 
   void Update() {
+    foreach (Connection c in connections) if (c != null) c.Update();
     foreach (Node nd in nodes) nd.Update();
-    Vector3 average = new Vector3();
-    for (int i = 0; i < mesh.vertices.Length; i++) average += nodes[i].location;
-    average /= mesh.vertices.Length;
-//    nodes[nodes.Length - 1] = new Node(this, average);
-    foreach (Connection cnt in connections) cnt.Update();
  
     Vector3[] nVec = new Vector3[nodes.Length];
     for (int i = 0; i < nodes.Length; i++) nVec[i] = nodes[i].location;
