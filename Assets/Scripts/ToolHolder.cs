@@ -14,7 +14,7 @@ public class ToolHolder : MonoBehaviour
     private SpriteRenderer rend;
     public Color HasToolColor;
     public Color EmptyColor;
-    public ToolSelection gmToolScript;
+    private ToolSelection gmToolScript;
     public Texture2D mouseToolSprite;
 
     // Start is called before the first frame update
@@ -26,6 +26,10 @@ public class ToolHolder : MonoBehaviour
         if (gmToolScript)
         {
             gmToolScript.AnnounceToolChanged += GmToolScript_AnnounceToolChanged;
+        }
+        else
+        {
+            Debug.LogWarning("ToolHolder could not find GameManager's ToolSelection script!");
         }
     }
 

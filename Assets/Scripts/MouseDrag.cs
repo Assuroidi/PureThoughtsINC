@@ -14,14 +14,44 @@ public class MouseDrag : MonoBehaviour
     private Plane dragPlane;
     private Camera mainCamera;
     private Vector3 offset;
+    private bool draggingEnabled;
+    private ToolSelection gmToolScript;
+
 
     private void Start()
     {
         mainCamera = Camera.main;
+        draggingEnabled = true;
+        gmToolScript = GameObject.FindGameObjectWithTag("GameManager")?.GetComponent<ToolSelection>(); ;
+        if (gmToolScript)
+        {
+            gmToolScript.AnnounceToolChanged += GmToolScript_AnnounceToolChanged; ;
+        }
+        else
+        {
+            Debug.LogWarning("MouseDrag could not find GameManager's ToolSelection script!");
+        }
+    }
+
+    private void GmToolScript_AnnounceToolChanged(ETool toolEnum)
+    {
+        switch (toolEnum)
+        {
+            case ETool.None:
+                draggingEnabled = true;
+                break;
+            default:
+                draggingEnabled = false;
+                break;
+        }
     }
 
     private void OnMouseDown()
     {
+        if (!draggingEnabled)
+        {
+            return;
+        }
         dragPlane = new Plane(mainCamera.transform.forward, transform.position);
         Ray camRay = mainCamera.ScreenPointToRay(Input.mousePosition);
 
@@ -31,6 +61,10 @@ public class MouseDrag : MonoBehaviour
 
     private void OnMouseDrag()
     {
+        if (!draggingEnabled)
+        {
+            return;
+        }
         Ray camRay = mainCamera.ScreenPointToRay(Input.mousePosition);
 
         dragPlane.Raycast(camRay, out float planeDist);
