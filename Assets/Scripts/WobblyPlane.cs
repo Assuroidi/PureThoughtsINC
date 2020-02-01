@@ -69,10 +69,11 @@ public class WobblyPlane : MonoBehaviour {
   public static WobblyPlane current;
   private static System.Random rnd = new System.Random();
 
+  public Vector3 center = new Vector3();
   public Vector3 gravity = new Vector3(0, 0, -0.9f);
   public float jelly_force = 0.2f;
   public double resistance = 0.5f;
-  public double floor = -3.3;
+  public double floor = -3.0;
   public float max_magnitude = 0.5f;
   public bool has_floor = true;
 
@@ -115,6 +116,9 @@ public class WobblyPlane : MonoBehaviour {
 
     foreach (Connection c in connections) if (c != null) c.Update();
     foreach (Node nd in nodes) nd.Update();
+    center = new Vector3();
+    foreach (Node nd in nodes) center += nd.location;
+    center /= (float)nodes.Length;
  
     Vector3[] nVec = new Vector3[nodes.Length];
     for (int i = 0; i < nodes.Length; i++) nVec[i] = nodes[i].location;
