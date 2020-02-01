@@ -26,7 +26,7 @@ public class Node {
     force = new Vector3();
     location.y = start.y;
 //    if (backbone) location.x = start.x;
-    if (location.z < parent.floor && speed.z < 0) {
+    if (parent.has_floor && location.z < parent.floor && speed.z < 0) {
       location.z = (float)parent.floor;
       speed.z = -speed.z;
     }
@@ -74,6 +74,7 @@ public class WobblyPlane : MonoBehaviour {
   public double resistance = 0.5f;
   public double floor = -3.3;
   public float max_magnitude = 0.5f;
+  public bool has_floor = true;
 
   public Mesh mesh;
   public Node[] nodes;
@@ -139,6 +140,9 @@ public class WobblyPlane : MonoBehaviour {
       UnityEngine.Random.Range(-0.3f, 0.3f), 0.0f, UnityEngine.Random.Range(-0.3f, 0.3f));
   }
 
+  public void RemoveFloor() { has_floor = false; }
+  public void AddFloor() { has_floor = true; }
+
 #if UNITY_EDITOR
   [UnityEditor.CustomEditor(typeof(WobblyPlane))]
   public class WobblyPlaneEditor : UnityEditor.Editor {
@@ -147,6 +151,8 @@ public class WobblyPlane : MonoBehaviour {
       WobblyPlane plane = (WobblyPlane)target;
 
       if (GUILayout.Button("Poke")) WobblyPlane.current.RandomPoke();
+
+      if (GUILayout.Button("Drop")) WobblyPlane.current.RemoveFloor();
     }
   }
 #endif
