@@ -8,6 +8,7 @@ public class DesiredThoughts : MonoBehaviour
 {
     public List<EThought> requiredThoughts;
     public int lol;
+    public GameObject[] thoughts;
     void Start(){
         int thoughtCount = UnityEngine.Random.Range(1,3);
         int i = 0;
@@ -20,7 +21,7 @@ public class DesiredThoughts : MonoBehaviour
     public void CompleteOrder(){
         thoughts = GameObject.FindGameObjectsWithTag("thought");
         foreach (GameObject thought in thoughts){
-            CheckDesiredThoughtMatch(thought.type);
+            CheckDesiredThoughtMatch(GetComponent<ThoughtController>().type);
         }
     }
 
