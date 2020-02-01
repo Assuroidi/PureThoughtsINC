@@ -14,8 +14,8 @@ public class ToolHolder : MonoBehaviour
     private SpriteRenderer rend;
     public Color HasToolColor;
     public Color EmptyColor;
-    //public GameObject gameManager;
     public ToolSelection gmToolScript;
+    public Texture2D mouseToolSprite;
 
     // Start is called before the first frame update
     void Start()
@@ -55,12 +55,22 @@ public class ToolHolder : MonoBehaviour
         if (currentTool == ETool.None)
         {
             ToolHelper(originalTool, HasToolColor);
+            gmToolScript.SelectTool(ETool.None);
+            gmToolScript.ChangeSprite();
         }
         else
         {
             ToolHelper(ETool.None, EmptyColor);
+            gmToolScript.SelectTool(originalTool);
+            gmToolScript.ChangeSprite(mouseToolSprite);
         }
     }
+
+    /// <summary>
+    /// Changes are made only locally! Call gmToolScript separately when needed!
+    /// </summary>
+    /// <param name="tool"></param>
+    /// <param name="color"></param>
 
     private void ToolHelper(ETool tool, Color color)
     {

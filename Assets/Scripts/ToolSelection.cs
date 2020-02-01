@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,6 +17,7 @@ public class ToolSelection : MonoBehaviour
     void Start()
     {
         SelectTool(ETool.None);
+
     }
 
     public void SelectTool(ETool tool)
@@ -29,6 +31,12 @@ public class ToolSelection : MonoBehaviour
         AnnounceToolChanged?.Invoke(tool);
     }
 
-    
-
+    /// <summary>
+    /// Sets the given sprite as the mouse cursor.
+    /// </summary>
+    /// <param name="texture"></param>
+    internal void ChangeSprite(Texture2D texture = null)
+    {
+        Cursor.SetCursor(texture, Vector2.zero, CursorMode.Auto);
+    }
 }
