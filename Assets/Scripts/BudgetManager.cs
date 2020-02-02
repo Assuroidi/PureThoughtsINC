@@ -18,8 +18,7 @@ public class BudgetManager : MonoBehaviour
     public event Events.SomethingHappened AnnounceBudgetEnd;
     public Text budgetText;
 
-    // Start is called before the first frame update
-    void Start()
+    public void StartBudgeting()
     {
         if (startingFunds <= 0)
         {
