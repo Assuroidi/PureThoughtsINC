@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System;
+using UnityEngine.UI;
 
 public class DesiredThoughts : MonoBehaviour
 {
@@ -11,6 +12,8 @@ public class DesiredThoughts : MonoBehaviour
     public GameObject gm;
     private GameObject item;
     private EThought t;
+    public int points;
+    public Text scoreText;
     void Start(){
         gm = GameObject.FindWithTag("GameManager");
         int thoughtCount = UnityEngine.Random.Range(1,4);
@@ -39,18 +42,24 @@ public class DesiredThoughts : MonoBehaviour
             foreach (GameObject thought in thoughts){
                 CheckDesiredThoughtMatch(thought.GetComponent<ThoughtController>().type);
             }
+            scoreText.text = points.ToString();
+            Destroy(gameObject, 2);
         }
+
     }
 
     private void CheckDesiredThoughtMatch(EThought thought){
         if(requiredThoughts.Contains(thought)){
             gm.GetComponent<BudgetManager>().AddFunds(100);
+            points += 100;
             Debug.Log("löyty!");
         }
         else{
             gm.GetComponent<BudgetManager>().AddFunds(-200);
+            points -= 100;
             Debug.Log("ei löytyny!");
         }
+
     }
     private void SetDesiredThoughSprite(GameObject item, EThought thought){
         Sprite thoughtSprite = Resources.Load(thought.ToString("f"), typeof(Sprite)) as Sprite;
