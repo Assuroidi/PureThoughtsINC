@@ -5,8 +5,10 @@ using UnityEngine;
 public enum EThought
 {
     Error = 0,  // Facilitates bug hunting
-    Sex = 1,
-    Drugs = 2,
-    Rock = 3,
-    Roll = 4,
+    Bangarang = 1,
+    Coin = 2,
+    Compliance = 3,
+    Eggplant = 4,
+    Nonsense = 5,
+    Kirkkovene = 6,
 }

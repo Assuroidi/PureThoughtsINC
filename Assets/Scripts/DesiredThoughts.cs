@@ -7,13 +7,50 @@ using System;
 public class DesiredThoughts : MonoBehaviour
 {
     public List<EThought> requiredThoughts;
-    public int lol;
+    public GameObject[] thoughts;
+    public GameObject gm;
+    private GameObject item;
+    private EThought t;
     void Start(){
-        int thoughtCount = UnityEngine.Random.Range(1,3);
+        gm = GameObject.FindWithTag("GameManager");
+        int thoughtCount = UnityEngine.Random.Range(1,4);
         int i = 0;
-        while (i < thoughtCount){
-            requiredThoughts.Add((EThought)UnityEngine.Random.Range(1, Enum.GetValues(typeof(EThought)).Length));
+        while (i < 4){
+            t = (EThought)UnityEngine.Random.Range(1, Enum.GetValues(typeof(EThought)).Length);
+            requiredThoughts.Add(t);
+            item = transform.Find("Item"+i).gameObject;
+            SetDesiredThoughSprite(item, t);
             i++;
         }
+    }
+
+    public void CompleteOrder(){
+        thoughts = GameObject.FindGameObjectsWithTag("thought");
+        if (thoughts.Length == 0)
+        {
+            Debug.Log("No game objects are tagged with 'thought'");
+        }
+        else
+        {
+            foreach (GameObject thought in thoughts){
+                CheckDesiredThoughtMatch(thought.GetComponent<ThoughtController>().type);
+            }
+        }
+    }
+
+    private void CheckDesiredThoughtMatch(EThought thought){
+        if(requiredThoughts.Contains(thought)){
+            gm.GetComponent<BudgetManager>().AddFunds(100);
+            Debug.Log("löyty!");
+        }
+        else{
+            gm.GetComponent<BudgetManager>().AddFunds(-200);
+            Debug.Log("ei löytyny!");
+        }
+    }
+    private void SetDesiredThoughSprite(GameObject item, EThought thought){
+        Sprite thoughtSprite = Resources.Load(thought.ToString("f"), typeof(Sprite)) as Sprite;
+        SpriteRenderer sprite = item.GetComponent<SpriteRenderer>();
+        sprite.sprite = thoughtSprite;
     }
 }

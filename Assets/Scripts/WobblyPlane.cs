@@ -111,6 +111,17 @@ public class WobblyPlane : MonoBehaviour {
     mesh.RecalculateBounds();
   }
 
+  void Poke(Vector3 point, Vector3 force) {
+    if (force == null) force = new Vector3(
+      UnityEngine.Random.Range(-0.03f, 0.03f), 0.0f, UnityEngine.Random.Range(-0.03f, 0.03f));
+    int index = 0;
+    float range = (point - nodes[index].location).magnitude;
+    for (int i = 0; i < nodes.Length; i++)
+      if ((point - nodes[0].location).magnitude < range)
+        (range, index) = ((point - nodes[0].location).magnitude, i);
+    nodes[index].speed += force;
+  }
+
 #if UNITY_EDITOR
   [UnityEditor.CustomEditor(typeof(WobblyPlane))]
   public class WobblyPlaneEditor : UnityEditor.Editor {
