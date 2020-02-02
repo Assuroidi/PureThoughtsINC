@@ -2,63 +2,33 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TrayAnimatorController : MonoBehaviour
-{
-    public Animator anim;
-    public bool trayOpen;
-    public bool nextBrains;
+public class TrayAnimatorController : MonoBehaviour {
+  public static TrayAnimatorController current = null;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        anim = GetComponent<Animator>();
-        trayOpen = false;
-        nextBrains = Input.GetMouseButton(0);
-    }
+  public Animator anim;
+  public bool trayOpen;
+  public bool nextBrains;
 
-    // Update is called once per frame
-    void Update()
-    {
-        /*
-        if (Input.GetMouseButton(0))
-        {
-            Debug.Log("Pressed left click.");
-        }
+  void Start() {
+    current = this;
+    anim = GetComponent<Animator>();
+    trayOpen = false;
+    nextBrains = false;
+  }
 
-        if (Input.GetMouseButton(1))
-        {
-            Debug.Log("Pressed right click.");
-        }
+  void Update() {
+//    anim.SetBool("Next_Brains", nextBrains);
+  }
 
-        if (Input.GetMouseButton(2))
-        {
-            Debug.Log("Pressed middle click.");
-        }
-        */
-        
-        if (nextBrains) //next brains button is pressed
-        {
-            anim.SetTrigger("Tray_auki");
-            Debug.Log("Pressed next brains.");
-            trayOpen = true;
-        }
-        else if (trayOpen = true && nextBrains) //and next brains button is pressed
-        {
-            anim.SetTrigger("Tray_kii");
-        }
-        else
-        {
-            anim.SetBool("Next_Brains", nextBrains);
-        }
+  public void OpenTray() {
+    anim.SetTrigger("Tray_auki");
+    Debug.Log("Tray opened");
+    trayOpen = true;
+  }
 
-        /*
-        void OnCollisionEnter(Collision col)
-        {
-            if (col.gameObject.CompareTag("Enemy"))
-            {
-                animator.SetTrigger("Die");
-            }
-        }
-        */
-    }
+  public void CloseTray() {
+    anim.SetTrigger("Tray_kii");
+    Debug.Log("Tray closed");
+    trayOpen = false;
+  }
 }

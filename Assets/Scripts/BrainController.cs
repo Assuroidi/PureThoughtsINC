@@ -18,8 +18,13 @@ public class BrainController : MonoBehaviour {
   }
 
   void NextBrains() {
-    if (brains == null) brains = Instantiate(brain_model);
-    else WobblyPlane.current.RemoveFloor();
+    if (brains == null) {
+      brains = Instantiate(brain_model);
+      if (TrayAnimatorController.current != null) TrayAnimatorController.current.CloseTray();
+    } else {
+      WobblyPlane.current.RemoveFloor();
+      if (TrayAnimatorController.current != null) TrayAnimatorController.current.OpenTray();
+    }
   }
 
 #if UNITY_EDITOR

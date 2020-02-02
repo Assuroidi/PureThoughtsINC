@@ -16,17 +16,21 @@ public class Node {
     this.parent = parent;
     this.start = location;
     this.location = start;
+
+    speed = parent.gravity * 1.0f;
   }
 
   public void Update() {
     speed += parent.gravity * Time.deltaTime + force;
     speed *= (float)(1.0d - parent.resistance * Time.deltaTime);
-    if (speed.magnitude > parent.max_magnitude) speed = speed.normalized * parent.max_magnitude;
+    if (parent.firstGround && parent.has_floor && speed.magnitude > parent.max_magnitude)
+      speed = speed.normalized * parent.max_magnitude;
     location += speed * Time.deltaTime;
     force = new Vector3();
     location.y = start.y;
 //    if (backbone) location.x = start.x;
     if (parent.has_floor && location.z < parent.floor && speed.z < 0) {
+      parent.firstGround = true;
       location.z = (float)parent.floor;
       speed.z = -speed.z;
     }
@@ -76,6 +80,7 @@ public class WobblyPlane : MonoBehaviour {
   public double floor = -3.0;
   public float max_magnitude = 0.5f;
   public bool has_floor = true;
+  public bool firstGround = false;
 
   public Mesh mesh;
   public Node[] nodes;
@@ -86,6 +91,7 @@ public class WobblyPlane : MonoBehaviour {
   void Start() {
     current = this;
     mesh = GetComponent<MeshFilter>().mesh;
+    firstGround = false;
 
     Vector3 average = new Vector3();
     nodes = new Node[mesh.vertices.Length];
