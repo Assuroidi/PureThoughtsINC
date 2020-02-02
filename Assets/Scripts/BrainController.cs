@@ -8,16 +8,19 @@ public class BrainController : MonoBehaviour {
   private GameObject brains = null;
   public float hide_distance = -5;
 
-  void Start() {}
+  void Start() {
+        if (TrayAnimatorController.current != null) TrayAnimatorController.current.CloseTray();
+    }
 
   void Update() {
-    if (brains != null && WobblyPlane.current.center.z < hide_distance) {
+    if (brains != null && WobblyPlane.current && WobblyPlane.current.center.z < hide_distance) {
+      if (TrayAnimatorController.current != null) TrayAnimatorController.current.CloseTray();
       Destroy(brains);
       brains = null;
     }
   }
 
-  void NextBrains() {
+  public void NextBrains() {
     if (brains == null) {
       brains = Instantiate(brain_model);
       if (TrayAnimatorController.current != null) TrayAnimatorController.current.CloseTray();
