@@ -11,15 +11,16 @@ public class DesiredThoughts : MonoBehaviour
     public GameObject[] thoughts;
     public GameObject gm;
     void Start(){
+        gm = GameObject.FindWithTag("GameManager");
         int thoughtCount = UnityEngine.Random.Range(1,3);
         int i = 0;
         while (i < thoughtCount){
             EThought thought = (EThought)UnityEngine.Random.Range(1, Enum.GetValues(typeof(EThought)).Length);
+            GameObject item = gameObject.transform.Find("Item"+i).gameObject;
             requiredThoughts.Add(thought);
-            SetDesiredThoughSprite(transform.FindChild("item"+i).gameObject, thought);
+            SetDesiredThoughSprite(item, thought);
             i++;
         }
-        gm = GameObject.FindWithTag("GameManager");
     }
 
     public void CompleteOrder(){
@@ -46,8 +47,8 @@ public class DesiredThoughts : MonoBehaviour
             Debug.Log("ei löytyny!");
         }
     }
-    private void SetDesiredThoughSprite(GameObject child, EThought thought){
-        Sprite thoughtSprite = Resources.Load(Enum.GetName(thought), typeof(Sprite)) as Sprite;
-        child.GetComponent(SpriteRenderer).sprite = thoughtSprite;
+    private void SetDesiredThoughSprite(GameObject item, EThought thought){
+        Sprite thoughtSprite = Resources.Load(thought.ToString("f"), typeof(Sprite)) as Sprite;
+        item.GetComponent<SpriteRenderer>().sprite = thoughtSprite;
     }
 }
