@@ -18,6 +18,8 @@ public class ThoughtController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        type = (EThought)Random.Range(1,6);
+        SetThoughSprite(gameObject, type);
         thoughtControlEnabled = false;
         velx = Random.Range(-5.0f, 5.0f);
         vely = Random.Range(-5.0f, 5.0f);
@@ -81,5 +83,12 @@ public class ThoughtController : MonoBehaviour
             velx *= 10;
             vely *= 10;
         }
+    }
+
+    private void SetThoughSprite(GameObject item, EThought thought){
+        Sprite thoughtSprite = Resources.Load(thought.ToString("f"), typeof(Sprite)) as Sprite;
+        Debug.Log(thoughtSprite);
+        SpriteRenderer sprite = item.GetComponent<SpriteRenderer>();
+        sprite.sprite = thoughtSprite;
     }
 }
