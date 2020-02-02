@@ -14,7 +14,7 @@ public class BrainController : MonoBehaviour {
     if (brains != null && WobblyPlane.current.center.z < hide_distance) {
       Destroy(brains);
       brains = null;
-    }
+    } if (brains == null && TrayAnimatorController.current != null) TrayAnimatorController.current.CloseTray();
   }
 
   void NextBrains() {
