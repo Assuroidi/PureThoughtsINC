@@ -7,18 +7,19 @@ using System;
 public class DesiredThoughts : MonoBehaviour
 {
     public List<EThought> requiredThoughts;
-    public int lol;
     public GameObject[] thoughts;
     public GameObject gm;
+    private GameObject item;
+    private EThought t;
     void Start(){
         gm = GameObject.FindWithTag("GameManager");
-        int thoughtCount = UnityEngine.Random.Range(1,3);
+        int thoughtCount = UnityEngine.Random.Range(1,4);
         int i = 0;
-        while (i < thoughtCount){
-            EThought thought = (EThought)UnityEngine.Random.Range(1, Enum.GetValues(typeof(EThought)).Length);
-            GameObject item = gameObject.transform.Find("Item"+i).gameObject;
-            requiredThoughts.Add(thought);
-            SetDesiredThoughSprite(item, thought);
+        while (i < 4){
+            t = (EThought)UnityEngine.Random.Range(1, Enum.GetValues(typeof(EThought)).Length);
+            requiredThoughts.Add(t);
+            item = transform.Find("Item"+i).gameObject;
+            SetDesiredThoughSprite(item, t);
             i++;
         }
     }
@@ -49,6 +50,7 @@ public class DesiredThoughts : MonoBehaviour
     }
     private void SetDesiredThoughSprite(GameObject item, EThought thought){
         Sprite thoughtSprite = Resources.Load(thought.ToString("f"), typeof(Sprite)) as Sprite;
-        item.GetComponent<SpriteRenderer>().sprite = thoughtSprite;
+        SpriteRenderer sprite = item.GetComponent<SpriteRenderer>();
+        sprite.sprite = thoughtSprite;
     }
 }
